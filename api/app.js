@@ -16,14 +16,11 @@ class App {
   constructor() {
     this.app = express();
 
-    // 환경변수
-    dotenv.config();
-
     // 미들웨어 세팅
     this.setMiddleWare();
 
     // 세션 세팅
-    this.setSession();
+    // this.setSession();
 
     // db 접속
     this.dbConnection();
@@ -36,19 +33,16 @@ class App {
 
     // 로컬??
     this.setLocals();
-
-    // 404 페이지를 찾을 수 없음.
-    this.status404();
-
-    // 에러처리
-    this.errorHandler();
   }
 
   dbConnection() {
     mongoose
       .connect(process.env.MONGO_URL)
       .then(() => {
-        console.log('Connection has been established successfully.');
+        console.log(
+          'Connection has been established successfully. host: ' +
+            mongoose.connection.host,
+        );
       })
       .catch((err) => {
         console.error('Unable to connect to the database', err);
@@ -63,21 +57,24 @@ class App {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(cookiParser());
+    dotenv.config();
   }
 
   setSession() {
-    this.app.sessionMiddleware = session({
+    this.app.sessionMiddleWare = session({
       secret: 'bblack_hun',
       resave: false,
       saveUninitialized: true,
       cookie: {
         maxAge: 2000 * 60 * 60,
       },
-      store: new MongoStore({
-        url: process.env.MONGO_URL,
-        collection: 'sessions',
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        collection: 'session',
       }),
     });
+
+    // this.app.use(cookiParser('bblack_hun'));
     this.app.use(this.app.sessionMiddleware);
 
     // passport 적용
@@ -109,17 +106,6 @@ class App {
 
   getRouting() {
     this.app.use(require('./server/controller'));
-  }
-  status404() {
-    this.app.use((req, res, _) => {
-      res.status(404).json('Error');
-    });
-  }
-
-  errorHandler() {
-    this.app.use((err, req, res, _) => {
-      res.status(500).json('500 Error');
-    });
   }
 }
 
