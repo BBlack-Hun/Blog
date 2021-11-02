@@ -68,14 +68,14 @@ class App {
       cookie: {
         maxAge: 2000 * 60 * 60,
       },
-      store: MongoStore.create({
+      store: new MongoStore.create({
         mongoUrl: process.env.MONGO_URL,
         collection: 'session',
       }),
     });
 
     // this.app.use(cookiParser('bblack_hun'));
-    this.app.use(this.app.sessionMiddleware);
+    this.app.use(this.app.sessionMiddleWare);
 
     // passport 적용
     this.app.use(passport.initialize());

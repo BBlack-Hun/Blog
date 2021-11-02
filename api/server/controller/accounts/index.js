@@ -6,9 +6,10 @@ const csrfProtection = require('../../middleware/csrf');
 
 const upload = require('../../middleware/multer');
 
-//REGISTER
+// REGISTER
 router.post('/register', ctrl.post_register);
 
-// CREATE
+// LOGIN
+router.post('/login', ctrl.post_login);
 
 module.exports = router;
