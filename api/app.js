@@ -58,7 +58,8 @@ class App {
 
   setMiddleWare() {
     // 미들웨어 세팅
-    this.app.use(logger('dev'));
+    this.app.use(express.json());
+    this.app.use(logger('tiny'));
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(cookiParser());
