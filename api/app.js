@@ -1,17 +1,16 @@
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const session = require('express-session');
-const mongoose = require('mongoose');
-const MongoStore = require('connect-mongo')(session);
 const cookiParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
+const passport = require('passport');
+const session = require('express-session');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')(session);
+
 // flash
 const flash = require('connect-flash');
-
-// db
-// const db = require('./models');
 
 class App {
   constructor() {
@@ -31,6 +30,12 @@ class App {
 
     // routing
     this.getRouting();
+
+    // 정적 위치
+    this.setStatic();
+
+    // 로컬??
+    this.setLocals();
 
     // 404 페이지를 찾을 수 없음.
     this.status404();
@@ -72,7 +77,33 @@ class App {
         collection: 'sessions',
       }),
     });
+    this.app.use(this.app.sessionMiddleware);
+
+    // passport 적용
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
+
+    // flash 메시지 관련
     this.app.use(flash);
+  }
+  setStatic() {
+    this.app.use('/server/uploads', express.static('uploads'));
+  }
+
+  setLocals() {
+    // 탬플릿 변수
+    this.app.use((req, res, next) => {
+      // 로그인 상태
+      this.app.locals.isLogin = req.isAuthenticated();
+
+      // 현재 접속자 정보
+      this.app.locals.currentUser = req.user;
+
+      // get 변수 받기
+      this.app.locals.req_query = req.query;
+
+      next();
+    });
   }
 
   getRouting() {
