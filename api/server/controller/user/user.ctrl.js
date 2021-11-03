@@ -47,3 +47,13 @@ exports.delete_user = async (req, res) => {
     res.status(401).json('You can delete only your account!');
   }
 };
+
+exports.get_user = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    const { password, ...others } = user._doc;
+    res.status(200).json(others);
+  } catch (e) {
+    res.status(500).json(e);
+  }
+};

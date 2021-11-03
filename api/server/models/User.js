@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema(
     },
   },
   // createdAt과 updatedAt을 자동으로 생성
-  { timestamp: true },
+  { timestamps: true },
 );
 
 module.exports = mongoose.model('User', UserSchema);

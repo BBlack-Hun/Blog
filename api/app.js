@@ -9,12 +9,18 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
 
+// admin 생성
+const User = require('./server/models/User');
+const { encrpt } = require('./server/helper/passwordHash');
+
 // flash
 const flash = require('connect-flash');
 
 class App {
   constructor() {
     this.app = express();
+
+    dotenv.config();
 
     // 미들웨어 세팅
     this.setMiddleWare();
@@ -44,6 +50,20 @@ class App {
             mongoose.connection.host,
         );
       })
+      .then(async () => {
+        const admin = await User.findOne({ username: 'admin' });
+        if (!admin) {
+          const password = encrpt(process.env.PASS_ADMIN);
+          const newAdmin = new User({
+            username: process.env.USERNAME,
+            email: process.env.EMAIL,
+            password: password,
+            isAdmin: process.env.ADMIN,
+          });
+          const user = newAdmin.save();
+          console.log(`Admin is created successfully!`);
+        }
+      })
       .catch((err) => {
         console.error('Unable to connect to the database', err);
         process.exit(1);
@@ -57,7 +77,6 @@ class App {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(cookiParser());
-    dotenv.config();
   }
 
   setSession() {

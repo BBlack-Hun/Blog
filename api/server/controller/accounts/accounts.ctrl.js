@@ -8,6 +8,7 @@ exports.post_register = async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: hashPw,
+      isAdmin: req.body.isAdmin,
     });
     const user = await newUser.save();
 
