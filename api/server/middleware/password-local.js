@@ -1,7 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const passwordHash = require('../helpers/passwordHash');
-const models = require('../models');
+const { encrpt } = require('../helper/passwordHash');
+const User = require('../models/User');
 
 passport.use(
   new LocalStrategy(
@@ -11,12 +11,9 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, username, password, done) => {
-      const user = await models.User.findOne({
-        where: {
-          username,
-          password: passwordHash(password),
-        },
-        // attributes: { exclude: ['passport'] },
+      const user = await User.findOne({
+        username: username,
+        password: encrpt(password),
       });
       if (!user) {
         return done(null, false, {

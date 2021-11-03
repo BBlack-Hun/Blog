@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
 
 const UserSchema = new mongoose.Schema(
   {
@@ -28,5 +29,9 @@ const UserSchema = new mongoose.Schema(
   // createdAt과 updatedAt을 자동으로 생성
   { timestamps: true },
 );
+
+UserSchema.plugin(passportLocalMongoose, {
+  usernameField: 'username',
+});
 
 module.exports = mongoose.model('User', UserSchema);

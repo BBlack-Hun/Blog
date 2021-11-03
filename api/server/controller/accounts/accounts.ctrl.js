@@ -10,7 +10,7 @@ exports.post_register = async (req, res) => {
       password: hashPw,
       isAdmin: req.body.isAdmin,
     });
-    const user = await newUser.save();
+    const user = await User.register(newUser, hashPw);
 
     const { password, ...others } = user._doc;
 
@@ -21,6 +21,7 @@ exports.post_register = async (req, res) => {
 };
 
 exports.post_login = async (req, res) => {
+  console.log('wait for Session!!');
   // db를 통한 검증 -> passport를 사용한 검증으로 변경 예정!
   try {
     const user = await User.findOne({
@@ -39,4 +40,12 @@ exports.post_login = async (req, res) => {
   } catch (e) {
     res.status(500).json(e);
   }
+};
+
+exports.get_logout = (req, res) => {
+  req.logout();
+  req.session.destroy();
+  res.clearCookie('sid');
+
+  res.status(200).json('Logout!');
 };

@@ -4,9 +4,8 @@ const bodyParser = require('body-parser');
 const cookiParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
-const passport = require('passport');
-const session = require('express-session');
 const mongoose = require('mongoose');
+const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
 // admin 생성
@@ -14,6 +13,7 @@ const User = require('./server/models/User');
 const { encrpt } = require('./server/helper/passwordHash');
 
 // flash
+const passport = require('passport');
 const flash = require('connect-flash');
 
 class App {
@@ -22,23 +22,20 @@ class App {
 
     dotenv.config();
 
-    // 미들웨어 세팅
-    this.setMiddleWare();
-
-    // 세션 세팅
-    // this.setSession();
-
     // db 접속
     this.dbConnection();
+
+    // 세션 세팅
+    this.setSession();
+
+    // 미들웨어 세팅
+    this.setMiddleWare();
 
     // routing
     this.getRouting();
 
     // 정적 위치
     this.setStatic();
-
-    // 로컬??
-    this.setLocals();
   }
 
   dbConnection() {
@@ -60,7 +57,7 @@ class App {
             password: password,
             isAdmin: process.env.ADMIN,
           });
-          const user = newAdmin.save();
+          const user = await User.register(newAdmin, password);
           console.log(`Admin is created successfully!`);
         }
       })
@@ -80,6 +77,7 @@ class App {
   }
 
   setSession() {
+    // 세션 세팅
     this.app.sessionMiddleWare = session({
       secret: 'bblack_hun',
       resave: false,
@@ -87,13 +85,11 @@ class App {
       cookie: {
         maxAge: 2000 * 60 * 60,
       },
-      store: new MongoStore.create({
-        mongoUrl: process.env.MONGO_URL,
-        collection: 'session',
+      store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        collection: 'sessions',
       }),
     });
-
-    // this.app.use(cookiParser('bblack_hun'));
     this.app.use(this.app.sessionMiddleWare);
 
     // passport 적용
@@ -101,26 +97,12 @@ class App {
     this.app.use(passport.session());
 
     // flash 메시지 관련
-    this.app.use(flash);
+    // this.app.use(flash);
+
+    console.log(`Session setting!`);
   }
   setStatic() {
     this.app.use('/server/uploads', express.static('uploads'));
-  }
-
-  setLocals() {
-    // 탬플릿 변수
-    this.app.use((req, res, next) => {
-      // 로그인 상태
-      this.app.locals.isLogin = req.isAuthenticated();
-
-      // 현재 접속자 정보
-      this.app.locals.currentUser = req.user;
-
-      // get 변수 받기
-      this.app.locals.req_query = req.query;
-
-      next();
-    });
   }
 
   getRouting() {
