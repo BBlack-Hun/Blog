@@ -1,15 +1,18 @@
 const { Router } = require('express');
 const router = Router();
-const ctrl = require('./accounts.ctrl');
+const ctrl = require('./user.ctrl');
 
 const csrfProtection = require('../../middleware/csrf');
 
 const upload = require('../../middleware/multer');
 
 // UPDATE
-router.post('/register', ctrl.post_register);
+router.put('/:id', ctrl.update_user);
 
-// LOGIN
-router.post('/login', ctrl.post_login);
+// DELETE
+router.delete('/:id', ctrl.delete_user);
+
+// GET USER
+router.get('/:id', ctrl.get_user);
 
 module.exports = router;

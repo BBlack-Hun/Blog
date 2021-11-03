@@ -105,7 +105,7 @@ class App {
   }
 
   getRouting() {
-    this.app.use(require('./server/controller'));
+    this.app.use('/api', require('./server/controller'));
   }
 }
 
