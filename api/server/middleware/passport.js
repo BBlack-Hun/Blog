@@ -21,11 +21,9 @@ passport.use(
           }
         })
         .then((user) => {
-          console.log('111111', user);
           if (!user) {
             return done(null, false, { message: 'Incorrect ID or PW' });
           }
-          console.log('222222222');
           return done(null, user, { message: 'Login Success' });
         })
         .catch((err) => done(err));
