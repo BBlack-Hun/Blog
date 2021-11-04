@@ -78,19 +78,19 @@ class App {
 
   setSession() {
     // 세션 세팅
-    this.app.sessionMiddleWare = session({
-      secret: 'bblack_hun',
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        maxAge: 2000 * 60 * 60,
-      },
-      store: new MongoStore({
-        mongooseConnection: mongoose.connection,
-        collection: 'sessions',
-      }),
-    });
-    this.app.use(this.app.sessionMiddleWare);
+    // this.app.sessionMiddleWare = session({
+    //   secret: 'bblack_hun',
+    //   resave: false,
+    //   saveUninitialized: true,
+    //   cookie: {
+    //     maxAge: 2000 * 60 * 60,
+    //   },
+    //   store: new MongoStore({
+    //     mongooseConnection: mongoose.connection,
+    //     collection: 'sessions',
+    //   }),
+    // });
+    // this.app.use(this.app.sessionMiddleWare);
 
     // passport 적용
     this.app.use(passport.initialize());

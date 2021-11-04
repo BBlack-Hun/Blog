@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, callback) => {
     // shops-날짜.jpg(png) 저장
-    callback(null, 'shops-' + Date.now() + '.' + file.mimetype.split('/')[1]);
+    callback(null, 'photo-' + Date.now() + '.' + file.mimetype.split('/')[1]);
   },
 });
 

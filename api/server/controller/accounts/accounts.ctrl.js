@@ -1,7 +1,9 @@
 const User = require('../../models/User');
 const { encrpt, decrpt } = require('../../helper/passwordHash');
+const jwt = require('jsonwebtoken');
 
 exports.post_register = async (req, res) => {
+  req.body.profilePic = req.file ? req.file.filename : '';
   try {
     const hashPw = await encrpt(req.body.password);
     const newUser = new User({
@@ -9,6 +11,7 @@ exports.post_register = async (req, res) => {
       email: req.body.email,
       password: hashPw,
       isAdmin: req.body.isAdmin,
+      profilePic: req.body.profilePic,
     });
     const user = await User.register(newUser, hashPw);
 
@@ -34,9 +37,17 @@ exports.post_login = async (req, res) => {
 
     hashPw !== req.body.password && res.status(401).json(`Wrong crendentials!`);
 
+    const accesstoken = jwt.sign(
+      {
+        username: user.username,
+      },
+      process.env.JWT_SEC,
+      { expiresIn: '3d' },
+    );
+
     const { password, ...others } = user._doc;
 
-    res.status(200).json(others);
+    res.status(200).json({ ...others, accesstoken });
   } catch (e) {
     res.status(500).json(e);
   }
@@ -45,7 +56,7 @@ exports.post_login = async (req, res) => {
 exports.get_logout = (req, res) => {
   req.logout();
   req.session.destroy();
-  res.clearCookie('sid');
+  res.clearCookie();
 
   res.status(200).json('Logout!');
 };

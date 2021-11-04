@@ -31,7 +31,15 @@ passport.use(
   ),
 );
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser((user, done) => {
+  console.log('serializeUser 작동');
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  console.log('serializeUser 작동');
+  // user.password = '';
+  done(null, user);
+});
 
 module.exports = passport;
