@@ -3,7 +3,9 @@ const { encrpt, decrpt } = require('../../helper/passwordHash');
 const jwt = require('jsonwebtoken');
 
 exports.post_register = async (req, res) => {
+  console.log('test');
   req.body.profilePic = req.file ? req.file.filename : '';
+  console.log(req.body);
   try {
     const hashPw = await encrpt(req.body.password);
     const newUser = new User({
@@ -13,8 +15,9 @@ exports.post_register = async (req, res) => {
       isAdmin: req.body.isAdmin,
       profilePic: req.body.profilePic,
     });
-    const user = await User.register(newUser, hashPw);
-
+    console.log('222222222');
+    const user = await newUser.save();
+    console.log('3333333');
     const { password, ...others } = user._doc;
 
     res.status(200).json(others);
@@ -40,10 +43,16 @@ exports.post_login = async (req, res) => {
     const accesstoken = jwt.sign(
       {
         username: user.username,
+        isAdmin: user.isAdmin,
       },
       process.env.JWT_SEC,
       { expiresIn: '3d' },
     );
+
+    res.cookie('accesstoken', 'bearer ' + accesstoken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     const { password, ...others } = user._doc;
 
@@ -56,7 +65,7 @@ exports.post_login = async (req, res) => {
 exports.get_logout = (req, res) => {
   req.logout();
   req.session.destroy();
-  res.clearCookie();
+  res.clearCookie('connect.sid');
 
   res.status(200).json('Logout!');
 };

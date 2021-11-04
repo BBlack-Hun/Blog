@@ -10,8 +10,9 @@ const storage = multer.diskStorage({
     callback(null, uploadDir);
   },
   filename: (req, file, callback) => {
-    // shops-날짜.jpg(png) 저장
-    callback(null, 'photo-' + Date.now() + '.' + file.mimetype.split('/')[1]);
+    // 게시자 or 파일명.jpg(png) 저장
+    const name = req.body.photo ? req.body.photo : req.body.username;
+    callback(null, name + '.' + file.mimetype.split('/')[1]);
   },
 });
 

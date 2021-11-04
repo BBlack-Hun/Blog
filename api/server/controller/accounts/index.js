@@ -2,21 +2,25 @@ const { Router } = require('express');
 const router = Router();
 const ctrl = require('./accounts.ctrl');
 
-const passport = require('../../middleware/passport-jwt');
+const passport = require('../../middleware/passport');
 
 const csrfProtection = require('../../middleware/csrf');
 
 const upload = require('../../middleware/multer');
 
 // REGISTER
-router.post('/register', csrfProtection, ctrl.post_register);
+router.post(
+  '/register',
+  csrfProtection,
+  upload.single('profilePic'),
+  ctrl.post_register,
+);
 
 // LOGIN
 router.post(
   '/login',
-  passport.authenticate('login'),
+  passport.authenticate('local'),
   csrfProtection,
-  upload.single('profilePic'),
   ctrl.post_login,
 );
 

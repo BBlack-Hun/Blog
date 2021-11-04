@@ -71,26 +71,25 @@ class App {
     // 미들웨어 세팅
     this.app.use(express.json());
     this.app.use(logger('tiny'));
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookiParser());
   }
 
   setSession() {
     // 세션 세팅
-    // this.app.sessionMiddleWare = session({
-    //   secret: 'bblack_hun',
-    //   resave: false,
-    //   saveUninitialized: true,
-    //   cookie: {
-    //     maxAge: 2000 * 60 * 60,
-    //   },
-    //   store: new MongoStore({
-    //     mongooseConnection: mongoose.connection,
-    //     collection: 'sessions',
-    //   }),
-    // });
-    // this.app.use(this.app.sessionMiddleWare);
+    this.app.sessionMiddleWare = session({
+      secret: 'bblack_hun',
+      resave: false,
+      saveUninitialized: true,
+      // cookie: {
+      //   maxAge: 2000 * 60 * 60,
+      // },
+      // store: new MongoStore({
+      //   mongooseConnection: mongoose.connection,
+      //   collection: 'sessions',
+      // }),
+    });
+    this.app.use(this.app.sessionMiddleWare);
 
     // passport 적용
     this.app.use(passport.initialize());
@@ -102,7 +101,7 @@ class App {
     console.log(`Session setting!`);
   }
   setStatic() {
-    this.app.use('/server/uploads', express.static('uploads'));
+    this.app.use('/image', express.static('./server/uploads'));
   }
 
   getRouting() {

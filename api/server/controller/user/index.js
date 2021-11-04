@@ -12,15 +12,20 @@ const csrfProtection = require('../../middleware/csrf');
 const upload = require('../../middleware/multer');
 
 // UPDATE
-router.put('/:id', upload.single('profilePic'), ctrl.update_user);
+router.put(
+  '/:id',
+  verifyTokenAndAuthorization,
+  upload.single('profilePic'),
+  ctrl.update_user,
+);
 
 // DELETE
-router.delete('/:id', ctrl.delete_user);
+router.delete('/:id', verifyTokenAndAuthorization, ctrl.delete_user);
 
 // GET USER
-router.get('/:id', ctrl.get_user);
+router.get('/:id', verifyTokenAndAdmin, ctrl.get_user);
 
 // GET ALL USERS
-router.get('/', ctrl.get_users);
+router.get('/', verifyTokenAndAdmin, ctrl.get_users);
 
 module.exports = router;
