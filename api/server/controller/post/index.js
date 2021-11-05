@@ -18,11 +18,18 @@ router.get('/:id', ctrl.get_post);
 router.get('/', ctrl.get_posts);
 
 // CREATE POST
-router.post('/', verifyToken, upload.single('photo'), ctrl.post_post);
+router.post(
+  '/',
+  csrfProtection,
+  verifyToken,
+  upload.single('photo'),
+  ctrl.post_post,
+);
 
 // UPDATE POST
 router.put(
   '/:id',
+  csrfProtection,
   verifyTokenAndAuthorization,
   upload.single('photo'),
   ctrl.update_post,

@@ -1,6 +1,7 @@
 const csrfProtection = require('../middleware/csrf');
 const { Router } = require('express');
 const router = Router();
+const xsrf = require('./home/index');
 
 router.use('/accounts', require('./accounts'));
 // router.use('/auth', require('./auth'));
