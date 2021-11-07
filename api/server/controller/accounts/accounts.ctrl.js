@@ -15,9 +15,7 @@ exports.post_register = async (req, res) => {
       isAdmin: req.body.isAdmin,
       profilePic: req.body.profilePic,
     });
-    console.log('222222222');
     const user = await newUser.save();
-    console.log('3333333');
     const { password, ...others } = user._doc;
 
     res.status(200).json(others);

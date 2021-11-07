@@ -2,6 +2,7 @@ const Post = require('../../models/Post');
 const { encrpt, decrpt } = require('../../helper/passwordHash');
 
 exports.post_post = async (req, res) => {
+  req.body.photo = req.file ? req.file.filename : '';
   const newPost = new Post(req.body);
   try {
     const savedPost = await newPost.save();
@@ -12,8 +13,17 @@ exports.post_post = async (req, res) => {
 };
 
 exports.update_post = async (req, res) => {
+  const fs = require('fs');
+  const path = require('path');
+  const uploadDir = path.join(__dirname, '../../uploads');
+
   try {
     const post = await Post.findById(req.params.id);
+
+    if (req.file && shop.photo) {
+      fs.unlinkSync(uploadDir + '/' + post.photo + '_' + post.username);
+    }
+    req.body.photo = req.file ? req.file.filename : shop.photo;
     if (post.username === req.body.username) {
       try {
         const updatedPost = await Post.findByIdAndUpdate(
