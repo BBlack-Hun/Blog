@@ -9,7 +9,7 @@ npm install && npm start
 1. import app.js
 2. invoke in start()
 3. Setup .env in the root
-4. Add MONGO_URI with correct value
+4. Add MONGO_URL with correct value
 
 #### contoller
 
@@ -26,7 +26,15 @@ npm install && npm start
 
 #### middleware
 
+- csrf
+- loginRequired
+- multer
+- passport.js
+- verifyToken
+
 #### Category Model
+
+-[] name {type : String, required : true}
 
 #### Post Model
 
