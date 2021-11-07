@@ -1,7 +1,43 @@
-### BLOG API
+#### Setup
 
-1. get요청일떄, csrfToken 발급
-2. post요청 들어올때, 해당 토큰을 검증
-3. 그 다음에 jwt 토큰 검사할것!
+```bash
+npm install && npm start
+```
 
-해야 하는 것
+#### Database Connection
+
+1. import app.js
+2. invoke in start()
+3. Setup .env in the root
+4. Add MONGO_URI with correct value
+
+#### contoller
+
+- accounts
+- auth
+- category
+- home
+- post
+- user
+
+#### helper
+
+- passwordHash
+
+#### middleware
+
+#### Category Model
+
+#### Post Model
+
+#### User Model
+
+#### Register User
+
+#### Login Users
+
+#### Create Post
+
+#### Mongoose Errors
+
+#### Security
